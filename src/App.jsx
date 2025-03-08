@@ -89,12 +89,14 @@ function App() {
               <div className="text-lg">{firstPlayerScore}</div>
               {/* timer */}
 
-              <Countdown
-                onStart={() => {
-                  playerTurn === 1;
-                }}
-                date={Date.now() + 10000}
-              />
+              {playerTurn === 1 && (
+                <Countdown
+                  onStart={() => {
+                    playerTurn === 1;
+                  }}
+                  date={Date.now() + 10000}
+                />
+              )}
             </div>
             {/* entering word */}
             <div className="p-2">
@@ -135,12 +137,14 @@ function App() {
               <div className="text-lg">{secondPlayerScore}</div>
               {/* timer */}
 
-              <Countdown
-                onStart={() => {
-                  playerTurn === 1;
-                }}
-                date={Date.now() + 10000}
-              />
+              {playerTurn === 2 && (
+                <Countdown
+                  onStart={() => {
+                    playerTurn === 2;
+                  }}
+                  date={Date.now() + 10000}
+                />
+              )}
             </div>
             {/* entering word */}
             <div className="p-2">
