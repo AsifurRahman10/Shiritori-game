@@ -21,6 +21,10 @@ function App() {
     if (lastWord && word[0] !== lastWord) {
       return alert(`Word must starts with the suggested ${lastWord}`);
     }
+    const wordChecker = firstPlayerWords.find((item) => item === word);
+    if (wordChecker) {
+      return alert("This word is already used you can not use it");
+    }
     axios
       .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
       .then((res) => {
@@ -44,6 +48,10 @@ function App() {
     // const lastWord = word[length];
     if (lastWord && word[0] !== lastWord) {
       return alert(`Word must starts with the suggested = ${lastWord}`);
+    }
+    const wordChecker = firstPlayerWords.find((item) => item === word);
+    if (wordChecker) {
+      return alert("This word is already used you can not use it");
     }
     axios
       .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
