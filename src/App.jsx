@@ -3,27 +3,36 @@ import "./App.css";
 import { Navbar } from "./Component/Navbar";
 import { GiHumanTarget } from "react-icons/gi";
 import axios from "axios";
+import Countdown from "react-countdown";
 
 function App() {
   const [firstPlayerWords, setFirstPlayerWords] = useState([]);
   const [secondPlayerWords, setSecondPlayerWords] = useState([]);
   const [playerTurn, setPlayerTurn] = useState(1);
+  const [lastWord, setLastWord] = useState("");
+  const [firstPlayerScore, setFirstPlayerScore] = useState(0);
+  const [secondPlayerScore, setSecondPlayerScore] = useState(0);
 
   // player 1 function
   const handleSubmitPlayer1 = (e) => {
     e.preventDefault();
     const form = e.target;
     const word = form.word.value;
+    if (lastWord && word[0] !== lastWord) {
+      return alert(`Word must starts with the suggested ${lastWord}`);
+    }
     axios
       .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
       .then((res) => {
-        console.log(res.data);
+        setFirstPlayerScore(firstPlayerScore + 10);
+        const lastWord = word[word.length - 1];
+        setLastWord(lastWord);
         setFirstPlayerWords([word, ...firstPlayerWords]);
         form.reset();
         setPlayerTurn(2);
       })
       .catch((err) => {
-        console.log(err.status === 404);
+        setFirstPlayerScore(firstPlayerScore - 2);
         alert("Invalid Word");
       });
   };
@@ -32,17 +41,22 @@ function App() {
     e.preventDefault();
     const form = e.target;
     const word = form.word.value;
-
+    // const lastWord = word[length];
+    if (lastWord && word[0] !== lastWord) {
+      return alert(`Word must starts with the suggested = ${lastWord}`);
+    }
     axios
       .get(`https://api.dictionaryapi.dev/api/v2/entries/en/${word}`)
       .then((res) => {
-        console.log(res.data);
+        setSecondPlayerScore(secondPlayerScore + 10);
+        const lastWord = word[word.length - 1];
+        setLastWord(lastWord);
         setSecondPlayerWords([word, ...secondPlayerWords]);
         form.reset();
         setPlayerTurn(1);
       })
       .catch((err) => {
-        console.log(err.status === 404);
+        setSecondPlayerScore(secondPlayerScore - 2);
         alert("Invalid Word");
       });
   };
@@ -61,10 +75,28 @@ function App() {
           </div>
           {/* word section */}
           <div className="border-2 min-h-[300px] w-full">
+            {/* score and timer */}
+            <div className="flex justify-between px-2">
+              {/* score */}
+              <div className="text-lg">{firstPlayerScore}</div>
+              {/* timer */}
+
+              <Countdown
+                onStart={() => {
+                  playerTurn === 1;
+                }}
+                date={Date.now() + 10000}
+              />
+            </div>
             {/* entering word */}
             <div className="p-2">
               <form onSubmit={handleSubmitPlayer1} className="space-x-2">
-                <input name="word" className="border-2 py-2" type="text" />
+                <input
+                  defaultValue={lastWord && playerTurn === 1 ? lastWord : ""}
+                  name="word"
+                  className="border-2 py-2"
+                  type="text"
+                />
                 <button type="submit" className="border p-2 cursor-pointer">
                   Enter word
                 </button>
@@ -72,8 +104,10 @@ function App() {
             </div>
             {/* show words */}
             <div className="space-y-2">
-              {firstPlayerWords.map((item) => (
-                <div className="border px-2 text-lg">{item}</div>
+              {firstPlayerWords.map((item, idx) => (
+                <div key={idx} className="border px-2 text-lg">
+                  {item}
+                </div>
               ))}
             </div>
           </div>
@@ -87,10 +121,28 @@ function App() {
           </div>
           {/* word section */}
           <div className="border-2 min-h-[300px] w-full">
+            {/* score and timer */}
+            <div className="flex justify-between px-2">
+              {/* score */}
+              <div className="text-lg">{secondPlayerScore}</div>
+              {/* timer */}
+
+              <Countdown
+                onStart={() => {
+                  playerTurn === 1;
+                }}
+                date={Date.now() + 10000}
+              />
+            </div>
             {/* entering word */}
             <div className="p-2">
               <form onSubmit={handleSubmitPlayer2} className="space-x-2">
-                <input name="word" className="border-2 py-2" type="text" />
+                <input
+                  defaultValue={lastWord && playerTurn === 2 ? lastWord : ""}
+                  name="word"
+                  className="border-2 py-2"
+                  type="text"
+                />
                 <button type="submit" className="border p-2 cursor-pointer">
                   Enter word
                 </button>
@@ -98,8 +150,10 @@ function App() {
             </div>
             {/* show words */}
             <div className="space-y-2">
-              {secondPlayerWords.map((item) => (
-                <div className="border px-2 text-lg">{item}</div>
+              {secondPlayerWords.map((item, idx) => (
+                <div key={idx} className="border px-2 text-lg">
+                  {item}
+                </div>
               ))}
             </div>
           </div>
